@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://nurav.github.io/atom.xml" rel="self"/>
   <link href="http://nurav.github.io/"/>
-  <updated>2013-11-11T05:08:16+00:00</updated>
+  <updated>2013-11-11T05:15:35+00:00</updated>
   <id>http://nurav.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,5 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hi there!]]></title>
+    <link href="http://nurav.github.io/blog/2013/11/11/title/"/>
+    <updated>2013-11-11T05:11:00+00:00</updated>
+    <id>http://nurav.github.io/blog/2013/11/11/title</id>
+    <content type="html"><![CDATA[<p>Hi!</p>
+]]></content>
+  </entry>
   
 </feed>
