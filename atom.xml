@@ -4,13 +4,22 @@
   <title><![CDATA[Blog.]]></title>
   <link href="http://nurav.github.io/atom.xml" rel="self"/>
   <link href="http://nurav.github.io/"/>
-  <updated>2013-11-11T05:56:55+00:00</updated>
+  <updated>2013-11-11T13:45:53+00:00</updated>
   <id>http://nurav.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
     
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Milu]]></title>
+    <link href="http://nurav.github.io/blog/2013/11/11/milu/"/>
+    <updated>2013-11-11T13:45:00+00:00</updated>
+    <id>http://nurav.github.io/blog/2013/11/11/milu</id>
+    <content type="html"><![CDATA[<p>Hello milu! :)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hi there!]]></title>
