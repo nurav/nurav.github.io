@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Varun&#39;s Blog</title>
-    <description>This is where you&#39;ll find details about my journey through the Season of KDE.
+    <description>This is where I&#39;ll write about my experience in the Season of KDE.
 </description>
-    <link>http://yourdomain.comnurav.github.io/</link>
-    <atom:link href="http://yourdomain.comnurav.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 14 Nov 2015 00:50:45 +0530</pubDate>
-    <lastBuildDate>Sat, 14 Nov 2015 00:50:45 +0530</lastBuildDate>
+    <link>http://nurav.github.io/</link>
+    <atom:link href="http://nurav.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 14 Nov 2015 01:04:14 +0530</pubDate>
+    <lastBuildDate>Sat, 14 Nov 2015 01:04:14 +0530</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -17,8 +17,8 @@
 &lt;p&gt;Awesome things are (hopefully) coming!&lt;/p&gt;
 </description>
         <pubDate>Sat, 14 Nov 2015 00:17:48 +0530</pubDate>
-        <link>http://yourdomain.comnurav.github.io/2015/11/14/hello-world.html</link>
-        <guid isPermaLink="true">http://yourdomain.comnurav.github.io/2015/11/14/hello-world.html</guid>
+        <link>http://nurav.github.io/2015/11/14/hello-world.html</link>
+        <guid isPermaLink="true">http://nurav.github.io/2015/11/14/hello-world.html</guid>
         
         
       </item>
