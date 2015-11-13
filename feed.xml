@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Varun&#39;s Blog</title>
+    <description>This is where you&#39;ll find details about my journey through the Season of KDE.
+</description>
+    <link>http://yourdomain.comnurav.github.io/</link>
+    <atom:link href="http://yourdomain.comnurav.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 14 Nov 2015 00:50:45 +0530</pubDate>
+    <lastBuildDate>Sat, 14 Nov 2015 00:50:45 +0530</lastBuildDate>
+    <generator>Jekyll v3.0.0</generator>
+    
+      <item>
+        <title>Hello World</title>
+        <description>&lt;p&gt;So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. I will post updates whenever I make any significant progress.&lt;/p&gt;
+
+&lt;p&gt;Awesome things are (hopefully) coming!&lt;/p&gt;
+</description>
+        <pubDate>Sat, 14 Nov 2015 00:17:48 +0530</pubDate>
+        <link>http://yourdomain.comnurav.github.io/2015/11/14/hello-world.html</link>
+        <guid isPermaLink="true">http://yourdomain.comnurav.github.io/2015/11/14/hello-world.html</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
