@@ -1,18 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Varun&#39;s Blog</title>
-    <description>This is where I&#39;ll write about my experience in the Season of KDE.
-</description>
-    <link>http://nurav.github.io/</link>
-    <atom:link href="http://nurav.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 22 Dec 2015 01:13:26 +0530</pubDate>
-    <lastBuildDate>Tue, 22 Dec 2015 01:13:26 +0530</lastBuildDate>
-    <generator>Jekyll v3.0.1</generator>
-    
-      <item>
-        <title>Write Back Plugins: What&#39;s the Best Way?</title>
-        <description>&lt;p&gt;That’s been a large gap between posts! I’m really sorry about that, I was busy with my university exams and with coding.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title></title>
+ <link href="http://nurav.github.io/atom.xml" rel="self"/>
+ <link href="http://nurav.github.io/"/>
+ <updated>2015-12-22T01:08:11+05:30</updated>
+ <id>http://nurav.github.io</id>
+ <author>
+   <name></name>
+ </author>
+ 
+ 
+   
+   <entry>
+     <title>Write Back Plugins: What's the Best Way?</title>
+     <link href="http://nurav.github.io/2015/12/06/write-back-plugins-whats-the-best-way.html"/>
+     <updated>2015-12-06T13:22:18+05:30</updated>
+     <id>http://nurav.github.io/2015/12/06/write-back-plugins-whats-the-best-way</id>
+     <content type="html">&lt;p&gt;That’s been a large gap between posts! I’m really sorry about that, I was busy with my university exams and with coding.&lt;/p&gt;
 
 &lt;p&gt;I have mainly been working on the write-back plugin mechanism that we needed to incorporate into KFileMetaData. Most of my changes are visible at &lt;a href=&quot;https://github.com/nurav/kfilemetadata/tree/varun-writerplugins&quot;&gt;my fork&lt;/a&gt;.&lt;/p&gt;
 
@@ -72,26 +77,51 @@
 &lt;p&gt;Signing off,
 Varun&lt;/p&gt;
 
-</description>
-        <pubDate>Sun, 06 Dec 2015 13:22:18 +0530</pubDate>
-        <link>http://nurav.github.io/2015/12/06/write-back-plugins-whats-the-best-way.html</link>
-        <guid isPermaLink="true">http://nurav.github.io/2015/12/06/write-back-plugins-whats-the-best-way.html</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Hello World</title>
-        <description>&lt;p&gt;So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. I will post updates whenever I make any significant progress.&lt;/p&gt;
+</content>
+   </entry>
+   
+ 
+   
+   <entry>
+     <title>Hello World</title>
+     <link href="http://nurav.github.io/2015/11/14/hello-world.html"/>
+     <updated>2015-11-14T00:17:48+05:30</updated>
+     <id>http://nurav.github.io/2015/11/14/hello-world</id>
+     <content type="html">&lt;p&gt;So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. I will post updates whenever I make any significant progress.&lt;/p&gt;
 
 &lt;p&gt;Awesome things are (hopefully) coming!&lt;/p&gt;
-</description>
-        <pubDate>Sat, 14 Nov 2015 00:17:48 +0530</pubDate>
-        <link>http://nurav.github.io/2015/11/14/hello-world.html</link>
-        <guid isPermaLink="true">http://nurav.github.io/2015/11/14/hello-world.html</guid>
-        
-        
-      </item>
-    
-  </channel>
-</rss>
+</content>
+   </entry>
+   
+ 
+   
+ 
+   
+   <entry>
+     <title>Left</title>
+     <link href="http://nurav.github.io/left/posts/2012/12/12/left.html"/>
+     <updated>2012-12-12T00:00:00+05:30</updated>
+     <id>http://nurav.github.io/left/posts/2012/12/12/left</id>
+     <content type="html">&lt;p&gt;Left is a clean, whitespace-happy layout for &lt;a href=&quot;https://github.com/mojombo/jekyll&quot;&gt;Jekyll&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is designed to be an easy layout to modify for your own blog. It was
+extracted from &lt;a href=&quot;http://zachholman.com&quot;&gt;zachholman.com&lt;/a&gt;, which means it was battle-hardened from
+years of posting serious blog posts about emoji and swear words.&lt;/p&gt;
+
+&lt;p&gt;You’re actually reading an example post right now. See how cool it is? Oh, be
+quiet, you’re making me blush.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;You’ll want to &lt;a href=&quot;https://github.com/holman/left#readme&quot;&gt;get the code&lt;/a&gt; and read the README to learn how to
+install and set up Left for your own purposes.&lt;/p&gt;
+
+&lt;p&gt;If you have any questions, follow and ping me on Twitter- I’m
+&lt;a href=&quot;https://twitter.com/holman&quot;&gt;@holman&lt;/a&gt;.&lt;/p&gt;
+
+</content>
+   </entry>
+   
+ 
+ 
+</feed>
