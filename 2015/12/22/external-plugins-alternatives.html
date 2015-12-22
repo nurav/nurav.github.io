@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Hello World</title>
-  <meta name="description" content="So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. This will help me look back and improve on m...">
+  <title>External Plugins: Alternatives</title>
+  <meta name="description" content="So, while making writer plugins, I felt that it would be really awesome if we could use another language (apart from C++), that has libraries to modify metad...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://nurav.github.io/2015/11/14/hello-world.html">
+  <link rel="canonical" href="http://nurav.github.io/2015/12/22/external-plugins-alternatives.html">
   <link rel="alternate" type="application/rss+xml" title="Varun's Blog" href="http://nurav.github.io/feed.xml">
 </head>
 
@@ -57,14 +57,59 @@
         <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">Hello World</h1>
-    <p class="post-meta"><time datetime="2015-11-14T00:17:48+05:30" itemprop="datePublished">Nov 14, 2015</time></p>
+    <h1 class="post-title" itemprop="name headline">External Plugins: Alternatives</h1>
+    <p class="post-meta"><time datetime="2015-12-22T08:46:06+05:30" itemprop="datePublished">Dec 22, 2015</time></p>
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <p>So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. This will help me look back and improve on mistakes that I might have made earlier. I will post updates whenever I make any significant progress.</p>
+    <p>So, while making writer plugins, I felt that it would be really awesome if we could use another language (apart from C++), that has libraries to modify metadata. External extractor plugins were already on the map, so why not add external writer plugins too! This would enable me to use <a href="https://pythonhosted.org/PyPDF2/">PyPDF</a>, <a href="http://www.siegmann.nl/epublib">Java Epublib</a> and other such libraries that might make it easier to write new plugins. I indentified a couple of ways to go about this:</p>
 
-<p>Please feel welcome to make suggestions, I’d love to know how I could do things better! Awesome things are (hopefully) coming!</p>
+<ul>
+  <li>
+    <p>Embedding a Python Interpreter:</p>
+
+    <p><a href="https://docs.python.org/2/extending/embedding.html">The Python Docs</a> show how this can be done. We can use <a href="http://www.boost.org/doc/libs/1_59_0/libs/python/doc/index.html">Boost.Python</a> to access a higher-level API. We’d just have to scan the contents of some predefined directory, where each Python script would be in some specific format (with functions like <code class="highlighter-rouge">mimetypes</code>, <code class="highlighter-rouge">write</code> or <code class="highlighter-rouge">extract</code>), and make a C++ shim that would generate a <code class="highlighter-rouge">WriterPlugin</code> or <code class="highlighter-rouge">ExtractorPlugin</code> for each script.</p>
+
+    <p>The main limitation to this approach would be that it would involve a lot of effort if I needed to support multiple languages, since I would need to embed all of their interpreters.</p>
+  </li>
+  <li>
+    <p>Creating a process for each plugin:</p>
+
+    <p>Every plugin would include a manifest that would detail how it is to be used. For example, a Java plugin would have to be run with the JVM, a Python one with CPython etc. The manifest would also have other information like supported mimetypes, properties write-back capabilities, etc. Whenever a <code class="highlighter-rouge">WriterPlugin</code> or an <code class="highlighter-rouge">ExtractorPlugin</code> is needed for a particular mimetype, all installed plugins are checked for support. Writing or reading metadata using a new plugin will invoke a new process using the instructions specified in the manifest. There are several ways we could use to communicate with the process:</p>
+
+    <ol>
+      <li>
+        <p>Using DBus: Would allow for more structed communication between the plugin and the framework. It would also decouple the plugins. But it might be overkill since limited communication is needed between the plugin and the framework.</p>
+      </li>
+      <li>
+        <p>Using named pipes: This allows for decoupling too, but again, might be overkill since we aren’t transferring large amounts of data.</p>
+      </li>
+      <li>
+        <p>Using stdin/stdout: This is the method Boudhayan Gupta has used in his patch. We need to carefully error conditions.</p>
+      </li>
+    </ol>
+
+    <p>The data is exchanged in the JSON format.</p>
+  </li>
+</ul>
+
+<p>We have decided to create a new process for each plugin and use stdin/stdout for communication, since it is the most straighforward way. If you think that there are other ways, or there is a discernible benefit to using any of the other methods I’ve listed, please let me know in the comments.</p>
+
+<p>Things to keep in mind (mostly suggested by vhanda on <a href="https://git.reviewboard.kde.org/r/125762">Boudhayan Gupta’s patch</a>):</p>
+
+<ol>
+  <li>
+    <p>There needs to be a proper error-handling framework, to make sure that an invalid plugin does not block execution for long periods.</p>
+  </li>
+  <li>
+    <p>Dependencies need to be handled, both for languages and language libraries. How I’m planning to do this with Python will be covered in a future post.</p>
+  </li>
+  <li>
+    <p>There needs to be a way to select from amongst several plugins offering support for the same mimetypes.</p>
+  </li>
+</ol>
+
+<p>So that’s about it for this post. I’m currently working on this, so you should expect to see some code soon. Thanks, and as always, please feel free to suggest any improvements I could make to my approach!</p>
 
   </div>
   
@@ -75,7 +120,7 @@
             /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
             var disqus_shortname = 'nuravblog'; // required: replace example with your forum shortname
             // var disqus_developer = 1; // Comment out when the site is live
-            var disqus_identifier = "/2015/11/14/hello-world.html";
+            var disqus_identifier = "/2015/12/22/external-plugins-alternatives.html";
 
             /* * * DON'T EDIT BELOW THIS LINE * * */
             (function() {

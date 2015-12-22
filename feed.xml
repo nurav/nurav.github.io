@@ -6,9 +6,67 @@
 </description>
     <link>http://nurav.github.io/</link>
     <atom:link href="http://nurav.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 22 Dec 2015 01:13:26 +0530</pubDate>
-    <lastBuildDate>Tue, 22 Dec 2015 01:13:26 +0530</lastBuildDate>
+    <pubDate>Tue, 22 Dec 2015 14:49:42 +0530</pubDate>
+    <lastBuildDate>Tue, 22 Dec 2015 14:49:42 +0530</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>External Plugins: Alternatives</title>
+        <description>&lt;p&gt;So, while making writer plugins, I felt that it would be really awesome if we could use another language (apart from C++), that has libraries to modify metadata. External extractor plugins were already on the map, so why not add external writer plugins too! This would enable me to use &lt;a href=&quot;https://pythonhosted.org/PyPDF2/&quot;&gt;PyPDF&lt;/a&gt;, &lt;a href=&quot;http://www.siegmann.nl/epublib&quot;&gt;Java Epublib&lt;/a&gt; and other such libraries that might make it easier to write new plugins. I indentified a couple of ways to go about this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Embedding a Python Interpreter:&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://docs.python.org/2/extending/embedding.html&quot;&gt;The Python Docs&lt;/a&gt; show how this can be done. We can use &lt;a href=&quot;http://www.boost.org/doc/libs/1_59_0/libs/python/doc/index.html&quot;&gt;Boost.Python&lt;/a&gt; to access a higher-level API. We’d just have to scan the contents of some predefined directory, where each Python script would be in some specific format (with functions like &lt;code class=&quot;highlighter-rouge&quot;&gt;mimetypes&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;write&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;extract&lt;/code&gt;), and make a C++ shim that would generate a &lt;code class=&quot;highlighter-rouge&quot;&gt;WriterPlugin&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;ExtractorPlugin&lt;/code&gt; for each script.&lt;/p&gt;
+
+    &lt;p&gt;The main limitation to this approach would be that it would involve a lot of effort if I needed to support multiple languages, since I would need to embed all of their interpreters.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Creating a process for each plugin:&lt;/p&gt;
+
+    &lt;p&gt;Every plugin would include a manifest that would detail how it is to be used. For example, a Java plugin would have to be run with the JVM, a Python one with CPython etc. The manifest would also have other information like supported mimetypes, properties write-back capabilities, etc. Whenever a &lt;code class=&quot;highlighter-rouge&quot;&gt;WriterPlugin&lt;/code&gt; or an &lt;code class=&quot;highlighter-rouge&quot;&gt;ExtractorPlugin&lt;/code&gt; is needed for a particular mimetype, all installed plugins are checked for support. Writing or reading metadata using a new plugin will invoke a new process using the instructions specified in the manifest. There are several ways we could use to communicate with the process:&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;
+        &lt;p&gt;Using DBus: Would allow for more structed communication between the plugin and the framework. It would also decouple the plugins. But it might be overkill since limited communication is needed between the plugin and the framework.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Using named pipes: This allows for decoupling too, but again, might be overkill since we aren’t transferring large amounts of data.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Using stdin/stdout: This is the method Boudhayan Gupta has used in his patch. We need to carefully error conditions.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+
+    &lt;p&gt;The data is exchanged in the JSON format.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We have decided to create a new process for each plugin and use stdin/stdout for communication, since it is the most straighforward way. If you think that there are other ways, or there is a discernible benefit to using any of the other methods I’ve listed, please let me know in the comments.&lt;/p&gt;
+
+&lt;p&gt;Things to keep in mind (mostly suggested by vhanda on &lt;a href=&quot;https://git.reviewboard.kde.org/r/125762&quot;&gt;Boudhayan Gupta’s patch&lt;/a&gt;):&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;There needs to be a proper error-handling framework, to make sure that an invalid plugin does not block execution for long periods.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Dependencies need to be handled, both for languages and language libraries. How I’m planning to do this with Python will be covered in a future post.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;There needs to be a way to select from amongst several plugins offering support for the same mimetypes.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;So that’s about it for this post. I’m currently working on this, so you should expect to see some code soon. Thanks, and as always, please feel free to suggest any improvements I could make to my approach!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 22 Dec 2015 08:46:06 +0530</pubDate>
+        <link>http://nurav.github.io/2015/12/22/external-plugins-alternatives.html</link>
+        <guid isPermaLink="true">http://nurav.github.io/2015/12/22/external-plugins-alternatives.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Write Back Plugins: What&#39;s the Best Way?</title>
@@ -67,7 +125,7 @@
 
 &lt;p&gt;The road ahead: This is just the beginning of what I have planned for the Season of KDE. I plan to work on &lt;a href=&quot;https://git.reviewboard.kde.org/r/125762&quot;&gt;Boudhayan Gupta’s patch&lt;/a&gt;, change it so that it can be used for &lt;code class=&quot;highlighter-rouge&quot;&gt;Writer&lt;/code&gt;s and implement the suggestions put forth by vHanda to improve it.&lt;/p&gt;
 
-&lt;p&gt;It’s been an exciting journey so far, and it’s going to get even better!&lt;/p&gt;
+&lt;p&gt;It’s been an exciting journey so far, and it’s going to get even better! And if you have any suggestions for me to improve upon, please do let me know of them via comments. Thank you!&lt;/p&gt;
 
 &lt;p&gt;Signing off,
 Varun&lt;/p&gt;
@@ -82,9 +140,9 @@ Varun&lt;/p&gt;
     
       <item>
         <title>Hello World</title>
-        <description>&lt;p&gt;So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. I will post updates whenever I make any significant progress.&lt;/p&gt;
+        <description>&lt;p&gt;So this is where I’ll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. This will help me look back and improve on mistakes that I might have made earlier. I will post updates whenever I make any significant progress.&lt;/p&gt;
 
-&lt;p&gt;Awesome things are (hopefully) coming!&lt;/p&gt;
+&lt;p&gt;Please feel welcome to make suggestions, I’d love to know how I could do things better! Awesome things are (hopefully) coming!&lt;/p&gt;
 </description>
         <pubDate>Sat, 14 Nov 2015 00:17:48 +0530</pubDate>
         <link>http://nurav.github.io/2015/11/14/hello-world.html</link>
