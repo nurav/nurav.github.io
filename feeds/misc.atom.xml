@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Varun's Blog</title><link href="http://nurav.github.io/" rel="alternate"></link><link href="http://nurav.github.io/feeds/misc.atom.xml" rel="self"></link><id>http://nurav.github.io/</id><updated>2015-12-22T08:46:06+05:30</updated><entry><title>External Plugins: Alternatives</title><link href="http://nurav.github.io/blog/2015/12/22/external-plugins-alternatives/" rel="alternate"></link><published>2015-12-22T08:46:06+05:30</published><author><name>Varun Joshi</name></author><id>tag:nurav.github.io,2015-12-22:blog/2015/12/22/external-plugins-alternatives/</id><summary type="html">&lt;p&gt;So, while making writer plugins, I felt that it would be really awesome if we could use another language (apart from C++), that has libraries to modify metadata. External extractor plugins were already on the map, so why not add external writer plugins too! This would enable me to use &lt;a href="https://pythonhosted.org/PyPDF2/"&gt;PyPDF&lt;/a&gt;, &lt;a href="http://www.siegmann.nl/epublib"&gt;Java Epublib&lt;/a&gt; and other such libraries that might make it easier to write new plugins. I indentified a couple of ways to go about this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Embedding a Python Interpreter:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="https://docs.python.org/2/extending/embedding.html"&gt;The Python Docs&lt;/a&gt; show how this can be done. We can use &lt;a href="http://www.boost.org/doc/libs/1_59_0/libs/python/doc/index.html"&gt;Boost.Python&lt;/a&gt; to access a higher-level API. We'd just have to scan the contents of some predefined directory, where each Python script would be in some specific format (with functions like &lt;code&gt;mimetypes&lt;/code&gt;, &lt;code&gt;write&lt;/code&gt; or &lt;code&gt;extract&lt;/code&gt;), and make a C++ shim that would generate a &lt;code&gt;WriterPlugin&lt;/code&gt; or &lt;code&gt;ExtractorPlugin&lt;/code&gt; for each script. &lt;/p&gt;
+&lt;p&gt;The main limitation to this approach would be that it would involve a lot of effort if I needed to support multiple languages, since I would need to embed all of their interpreters.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Creating a process for each plugin:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Every plugin would include a manifest that would detail how it is to be used. For example, a Java plugin would have to be run with the JVM, a Python one with CPython etc. The manifest would also have other information like supported mimetypes, properties write-back capabilities, etc. Whenever a &lt;code&gt;WriterPlugin&lt;/code&gt; or an &lt;code&gt;ExtractorPlugin&lt;/code&gt; is needed for a particular mimetype, all installed plugins are checked for support. Writing or reading metadata using a new plugin will invoke a new process using the instructions specified in the manifest. There are several ways we could use to communicate with the process:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;1. Using DBus: Would allow for more structed communication between the plugin and the framework. It would also decouple the plugins. But it might be overkill since limited communication is needed between the plugin and the framework.
+
+2. Using named pipes: This allows for decoupling too, but again, might be overkill since we aren&amp;#39;t transferring large amounts of data.
+
+3. Using stdin/stdout: This is the method Boudhayan Gupta has used in his patch. We need to carefully error conditions.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The data is exchanged in the JSON format.&lt;/p&gt;
+&lt;p&gt;We have decided to create a new process for each plugin and use stdin/stdout for communication, since it is the most straighforward way. If you think that there are other ways, or there is a discernible benefit to using any of the other methods I've listed, please let me know in the comments.&lt;/p&gt;
+&lt;p&gt;Things to keep in mind (mostly suggested by vhanda on &lt;a href="https://git.reviewboard.kde.org/r/125762"&gt;Boudhayan Gupta's patch&lt;/a&gt;):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;There needs to be a proper error-handling framework, to make sure that an invalid plugin does not block execution for long periods.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dependencies need to be handled, both for languages and language libraries. How I'm planning to do this with Python will be covered in a future post.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;There needs to be a way to select from amongst several plugins offering support for the same mimetypes.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;So that's about it for this post. I'm currently working on this, so you should expect to see some code soon. Thanks, and as always, please feel free to suggest any improvements I could make to my approach!&lt;/p&gt;</summary><category term="KDE"></category></entry><entry><title>Write Back Plugins: What's the Best Way?</title><link href="http://nurav.github.io/blog/2015/12/06/write-back-plugins-whats-the-best-way/" rel="alternate"></link><published>2015-12-06T13:22:18+05:30</published><author><name>Varun Joshi</name></author><id>tag:nurav.github.io,2015-12-06:blog/2015/12/06/write-back-plugins-whats-the-best-way/</id><summary type="html">&lt;p&gt;That's been a large gap between posts! I'm really sorry about that, I was busy with my university exams and with coding.&lt;/p&gt;
+&lt;p&gt;I have mainly been working on the write-back plugin mechanism that we needed to incorporate into KFileMetaData. Most of my changes are visible at &lt;a href="https://github.com/nurav/kfilemetadata/tree/varun-writerplugins"&gt;my fork&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;The work yet has involved a couple of decisions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Deciding the structure of the framework:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;While writing the code for write-back plugins, I noticed lots of commonalities amongst what I was writing and extractors. I thought of abstracting out these common elements into a generic Plugin class, that would optionally support both reading writing data. Alas, this could not be done. Doing this would involve changing the ABI of KFileMetaData, breaking compatibility with other tools that use the current version. So, after consulting with my &lt;a href="http://vhanda.in"&gt;mentor&lt;/a&gt;, I decided to rewrite the write-back plugin infrastructure from scratch. Developers working on both writer and extractor plugins will have to find a way to share data outside of the infrastructure we will provide.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Deciding what writers to write first:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some of the libraries that we currently use for extraction don't support writing back yet. Poppler is one case. Though they are working on &lt;a href="https://bugs.freedesktop.org/show_bug.cgi?id=36653"&gt;adding support for writing back PDF metadata&lt;/a&gt;, it's not ready yet, and I'll have to defer writing a plugin for PDF metadata (or else implement external writer support first, as BaloneyGeek on #kde-devel suggested). I have started with writing a rudimentary TagLib writer, and I'm going to progress into writing a writer for epub books as well.&lt;/p&gt;
+&lt;p&gt;What I have learned yet:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;CMake: Though I have struggled a lot with it, my efforts are starting to bear fruit. I finally feel comfortable making my own CMakeLists.txt.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Qt: I'm learning a lot about all the functionalities Qt offers, and I try to integrate whatever I can from what I learn into the code. My mentor's suggestions have also taught me a lot about some less obvious parts.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;C++: Exploring the code base, I chanced upon a lot of new patterns, like the PIMPL, object reuse etc. I try my best to know why what is done, so I avoid the pitfalls that the creators of these patterns faced.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That's enough about what I've learned. I'll now outline some of the changes you'll see on my fork that you just might see in the final framework:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A new &lt;code&gt;WriterPlugin&lt;/code&gt; class: &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This class will be subclassed by all plugins that hope to write data to some file. The most important functions are &lt;code&gt;write&lt;/code&gt; and &lt;code&gt;writeMimetypes&lt;/code&gt;. &lt;code&gt;write&lt;/code&gt; is where the action is. &lt;code&gt;WriterPlugin&lt;/code&gt;s will implement this function to actually write the metadata to disk. &lt;code&gt;writeMimetypes&lt;/code&gt; simply lists the mimetypes supported by the plugin. A &lt;code&gt;supportedProperties&lt;/code&gt; function is also something that I plan to add, to make sure that applications do not attempt to write an unsuitable proptery datum to some file. This is sort of analogous to &lt;code&gt;ExtractorPlugin&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;code&gt;Writer&lt;/code&gt; framework:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I have put in analogues to most of the functionalities that &lt;code&gt;Extractor&lt;/code&gt;s offer. Instead of using something similar to &lt;code&gt;ExtractionResult&lt;/code&gt; that needed to be subclassed, I have used &lt;code&gt;WriteData&lt;/code&gt;, which is concrete. The rationale behind this is that we won't need to store huge amounts of data to write back, since we don't support writing back text.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;code&gt;TagLibWriter&lt;/code&gt; class:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This shows how the new &lt;code&gt;Writer&lt;/code&gt; classes can be used. It is really rudimentary at the moment, but I plan to extend it to support writing back all the properties that can be read by &lt;code&gt;TagLibExtractor&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The road ahead: This is just the beginning of what I have planned for the Season of KDE. I plan to work on &lt;a href="https://git.reviewboard.kde.org/r/125762"&gt;Boudhayan Gupta's patch&lt;/a&gt;, change it so that it can be used for &lt;code&gt;Writer&lt;/code&gt;s and implement the suggestions put forth by vHanda to improve it.&lt;/p&gt;
+&lt;p&gt;It's been an exciting journey so far, and it's going to get even better! And if you have any suggestions for me to improve upon, please do let me know of them via comments. Thank you!&lt;/p&gt;
+&lt;p&gt;Signing off,
+Varun&lt;/p&gt;</summary><category term="KDE"></category></entry><entry><title>Hello World</title><link href="http://nurav.github.io/blog/2015/11/14/hello-world/" rel="alternate"></link><published>2015-11-14T00:17:48+05:30</published><author><name>Varun Joshi</name></author><id>tag:nurav.github.io,2015-11-14:blog/2015/11/14/hello-world/</id><summary type="html">&lt;p&gt;So this is where I'll be documenting my progress throughout the Season of KDE, as I had promised in my proposal. This will help me look back and improve on mistakes that I might have made earlier. I will post updates whenever I make any significant progress.&lt;/p&gt;
+&lt;p&gt;Please feel welcome to make suggestions, I'd love to know how I could do things better! Awesome things are (hopefully) coming!&lt;/p&gt;</summary><category term="KDE"></category></entry></feed>
