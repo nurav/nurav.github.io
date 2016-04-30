@@ -1,0 +1,39 @@
+<p>I have mainly been working on the write-back plugin mechanism that we needed to incorporate into KFileMetaData. Most of my changes are visible at <a href="https://github.com/nurav/kfilemetadata/tree/varun-writerplugins">my fork</a>. </p>
+<p>The work yet has involved a couple of decisions:</p>
+<ul>
+<li>Deciding the structure of the framework:</li>
+</ul>
+<p>While writing the code for write-back plugins, I noticed lots of commonalities amongst what I was writing and extractors. I thought of abstracting out these common elements into a generic Plugin class, that would optionally support both reading writing data. Alas, this could not be done. Doing this would involve changing the ABI of KFileMetaData, breaking compatibility with other tools that use the current version. So, after consulting with my <a href="http://vhanda.in">mentor</a>, I decided to rewrite the write-back plugin infrastructure from scratch. Developers working on both writer and extractor plugins will have to find a way to share data outside of the infrastructure we will provide.</p>
+<ul>
+<li>Deciding what writers to write first:</li>
+</ul>
+<p>Some of the libraries that we currently use for extraction don't support writing back yet. Poppler is one case. Though they are working on <a href="https://bugs.freedesktop.org/show_bug.cgi?id=36653">adding support for writing back PDF metadata</a>, it's not ready yet, and I'll have to defer writing a plugin for PDF metadata (or else implement external writer support first, as BaloneyGeek on #kde-devel suggested). I have started with writing a rudimentary TagLib writer, and I'm going to progress into writing a writer for epub books as well.</p>
+<p>What I have learned yet:</p>
+<ul>
+<li>
+<p>CMake: Though I have struggled a lot with it, my efforts are starting to bear fruit. I finally feel comfortable making my own CMakeLists.txt.</p>
+</li>
+<li>
+<p>Qt: I'm learning a lot about all the functionalities Qt offers, and I try to integrate whatever I can from what I learn into the code. My mentor's suggestions have also taught me a lot about some less obvious parts.</p>
+</li>
+<li>
+<p>C++: Exploring the code base, I chanced upon a lot of new patterns, like the PIMPL, object reuse etc. I try my best to know why what is done, so I avoid the pitfalls that the creators of these patterns faced.</p>
+</li>
+</ul>
+<p>That's enough about what I've learned. I'll now outline some of the changes you'll see on my fork that you just might see in the final framework:</p>
+<ul>
+<li>A new <code>WriterPlugin</code> class: </li>
+</ul>
+<p>This class will be subclassed by all plugins that hope to write data to some file. The most important functions are <code>write</code> and <code>writeMimetypes</code>. <code>write</code> is where the action is. <code>WriterPlugin</code>s will implement this function to actually write the metadata to disk. <code>writeMimetypes</code> simply lists the mimetypes supported by the plugin. A <code>supportedProperties</code> function is also something that I plan to add, to make sure that applications do not attempt to write an unsuitable proptery datum to some file. This is sort of analogous to <code>ExtractorPlugin</code>.</p>
+<ul>
+<li>A <code>Writer</code> framework:</li>
+</ul>
+<p>I have put in analogues to most of the functionalities that <code>Extractor</code>s offer. Instead of using something similar to <code>ExtractionResult</code> that needed to be subclassed, I have used <code>WriteData</code>, which is concrete. The rationale behind this is that we won't need to store huge amounts of data to write back, since we don't support writing back text.</p>
+<ul>
+<li>A <code>TagLibWriter</code> class:</li>
+</ul>
+<p>This shows how the new <code>Writer</code> classes can be used. It is really rudimentary at the moment, but I plan to extend it to support writing back all the properties that can be read by <code>TagLibExtractor</code>.</p>
+<p>The road ahead: This is just the beginning of what I have planned for the Season of KDE. I plan to work on <a href="https://git.reviewboard.kde.org/r/125762">Boudhayan Gupta's patch</a>, change it so that it can be used for <code>Writer</code>s and implement the suggestions put forth by vHanda to improve it.</p>
+<p>It's been an exciting journey so far, and it's going to get even better! And if you have any suggestions for me to improve upon, please do let me know of them via comments. Thank you!</p>
+<p>Signing off,
+Varun</p>
