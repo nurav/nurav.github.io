@@ -1,7 +1,7 @@
 .. title: Guess who got into Google Summer of Code?
 .. slug: guess-who-got-into-google-summer-of-code
 .. date: 2016-04-30 23:44:47 UTC+05:30
-.. tags: Mozilla 
+.. tags: Mozilla, draft 
 .. category: 
 .. link: 
 .. description: 
