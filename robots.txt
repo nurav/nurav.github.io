@@ -1,0 +1,4 @@
+Sitemap: http://nurav.github.io/sitemapindex.xml
+
+User-Agent: *
+Host: nurav.github.io
