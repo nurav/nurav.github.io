@@ -10,19 +10,23 @@
   <lastmod>2016-04-30T16:05:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>http://nurav.github.io/categories/mozilla.xml</loc>
+  <lastmod>2016-04-30T19:26:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>http://nurav.github.io/galleries/demo/rss.xml</loc>
-  <lastmod>2016-04-30T16:19:00Z</lastmod>
+  <lastmod>2016-04-30T17:54:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://nurav.github.io/galleries/rss.xml</loc>
-  <lastmod>2016-04-30T16:19:00Z</lastmod>
+  <lastmod>2016-04-30T17:54:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://nurav.github.io/rss.xml</loc>
-  <lastmod>2016-04-30T16:05:00Z</lastmod>
+  <lastmod>2016-04-30T19:26:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>http://nurav.github.io/sitemap.xml</loc>
-  <lastmod>2016-04-30T16:19:00Z</lastmod>
+  <lastmod>2016-04-30T19:26:00Z</lastmod>
  </sitemap>
 </sitemapindex>

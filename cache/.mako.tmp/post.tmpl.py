@@ -5,12 +5,12 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1462033178.697844
+_modified_time = 1462044391.3201442
 _enable_loop = True
-_template_filename = '/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/bootstrap3/templates/post.tmpl'
+_template_filename = '/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/post.tmpl'
 _template_uri = 'post.tmpl'
 _source_encoding = 'utf-8'
-_exports = ['extra_head', 'content', 'sourcelink']
+_exports = ['extra_head', 'content']
 
 
 def _mako_get_namespace(context, name):
@@ -38,18 +38,15 @@ def render_body(context,**pageargs):
         __M_locals = __M_dict_builtin(pageargs=pageargs)
         def extra_head():
             return render_extra_head(context._locals(__M_locals))
+        messages = context.get('messages', UNDEFINED)
+        post = context.get('post', UNDEFINED)
+        comments = _mako_get_namespace(context, 'comments')
+        site_has_comments = context.get('site_has_comments', UNDEFINED)
+        helper = _mako_get_namespace(context, 'helper')
         def content():
             return render_content(context._locals(__M_locals))
-        post = context.get('post', UNDEFINED)
         pheader = _mako_get_namespace(context, 'pheader')
-        messages = context.get('messages', UNDEFINED)
-        site_has_comments = context.get('site_has_comments', UNDEFINED)
         parent = context.get('parent', UNDEFINED)
-        show_sourcelink = context.get('show_sourcelink', UNDEFINED)
-        def sourcelink():
-            return render_sourcelink(context._locals(__M_locals))
-        comments = _mako_get_namespace(context, 'comments')
-        helper = _mako_get_namespace(context, 'helper')
         __M_writer = context.writer()
         __M_writer('\n')
         __M_writer('\n')
@@ -62,11 +59,6 @@ def render_body(context,**pageargs):
         __M_writer('\n\n')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content'):
             context['self'].content(**pageargs)
-        
-
-        __M_writer('\n\n')
-        if 'parent' not in context._data or not hasattr(context._data['parent'], 'sourcelink'):
-            context['self'].sourcelink(**pageargs)
         
 
         __M_writer('\n')
@@ -92,7 +84,7 @@ def render_extra_head(context,**pageargs):
             __M_writer(filters.html_escape(str(post.meta('keywords'))))
             __M_writer('">\n')
         if post.description():
-            __M_writer('    <meta name="description" itemprop="description" content="')
+            __M_writer('    <meta name="description" content="')
             __M_writer(filters.html_escape(str(post.description())))
             __M_writer('">\n')
         __M_writer('    <meta name="author" content="')
@@ -127,13 +119,13 @@ def render_extra_head(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
-        site_has_comments = context.get('site_has_comments', UNDEFINED)
         def content():
             return render_content(context)
-        post = context.get('post', UNDEFINED)
         pheader = _mako_get_namespace(context, 'pheader')
         messages = context.get('messages', UNDEFINED)
+        post = context.get('post', UNDEFINED)
         comments = _mako_get_namespace(context, 'comments')
+        site_has_comments = context.get('site_has_comments', UNDEFINED)
         helper = _mako_get_namespace(context, 'helper')
         __M_writer = context.writer()
         __M_writer('\n<article class="post-')
@@ -163,29 +155,8 @@ def render_content(context,**pageargs):
         context.caller_stack._pop_frame()
 
 
-def render_sourcelink(context,**pageargs):
-    __M_caller = context.caller_stack._push_frame()
-    try:
-        def sourcelink():
-            return render_sourcelink(context)
-        messages = context.get('messages', UNDEFINED)
-        show_sourcelink = context.get('show_sourcelink', UNDEFINED)
-        post = context.get('post', UNDEFINED)
-        __M_writer = context.writer()
-        __M_writer('\n')
-        if show_sourcelink:
-            __M_writer('    <li>\n    <a href="')
-            __M_writer(str(post.source_link()))
-            __M_writer('" id="sourcelink">')
-            __M_writer(str(messages("Source")))
-            __M_writer('</a>\n    </li>\n')
-        return ''
-    finally:
-        context.caller_stack._pop_frame()
-
-
 """
 __M_BEGIN_METADATA
-{"filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/bootstrap3/templates/post.tmpl", "source_encoding": "utf-8", "line_map": {"139": 30, "140": 31, "141": 31, "142": 32, "143": 32, "144": 34, "145": 34, "146": 38, "147": 38, "148": 39, "149": 39, "150": 42, "23": 3, "152": 44, "153": 44, "26": 4, "155": 45, "156": 48, "29": 2, "158": 48, "159": 50, "160": 50, "35": 0, "166": 53, "154": 45, "157": 48, "176": 54, "177": 55, "178": 56, "179": 56, "180": 56, "181": 56, "54": 2, "55": 3, "56": 4, "57": 5, "187": 181, "151": 43, "62": 28, "175": 53, "67": 51, "72": 59, "78": 7, "87": 7, "88": 8, "89": 8, "90": 9, "91": 10, "92": 10, "93": 10, "94": 12, "95": 13, "96": 13, "97": 13, "98": 15, "99": 15, "100": 15, "101": 16, "102": 17, "103": 17, "104": 17, "105": 17, "106": 17, "107": 19, "108": 20, "109": 20, "110": 20, "111": 20, "112": 20, "113": 22, "114": 23, "115": 25, "116": 25, "117": 25, "118": 26, "119": 26, "120": 27, "121": 27, "127": 30}, "uri": "post.tmpl"}
+{"line_map": {"131": 30, "132": 31, "133": 31, "134": 32, "135": 32, "136": 34, "137": 34, "138": 38, "139": 38, "140": 39, "141": 39, "142": 42, "143": 43, "144": 44, "145": 44, "146": 45, "147": 45, "148": 48, "149": 48, "150": 48, "23": 3, "152": 50, "26": 4, "29": 2, "158": 152, "35": 0, "51": 2, "52": 3, "53": 4, "54": 5, "59": 28, "151": 50, "64": 51, "70": 7, "79": 7, "80": 8, "81": 8, "82": 9, "83": 10, "84": 10, "85": 10, "86": 12, "87": 13, "88": 13, "89": 13, "90": 15, "91": 15, "92": 15, "93": 16, "94": 17, "95": 17, "96": 17, "97": 17, "98": 17, "99": 19, "100": 20, "101": 20, "102": 20, "103": 20, "104": 20, "105": 22, "106": 23, "107": 25, "108": 25, "109": 25, "110": 26, "111": 26, "112": 27, "113": 27, "119": 30}, "uri": "post.tmpl", "source_encoding": "utf-8", "filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/post.tmpl"}
 __M_END_METADATA
 """
