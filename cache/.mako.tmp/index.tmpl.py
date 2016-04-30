@@ -5,12 +5,12 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1462044391.5214221
+_modified_time = 1462044503.2969785
 _enable_loop = True
-_template_filename = 'themes/lanyon/templates/index.tmpl'
+_template_filename = '/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/index.tmpl'
 _template_uri = 'index.tmpl'
 _source_encoding = 'utf-8'
-_exports = ['extra_head', 'content', 'content_header']
+_exports = ['content_header', 'content', 'extra_head']
 
 
 def _mako_get_namespace(context, name):
@@ -33,21 +33,25 @@ def render_body(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
-        def extra_head():
-            return render_extra_head(context._locals(__M_locals))
-        posts = context.get('posts', UNDEFINED)
-        permalink = context.get('permalink', UNDEFINED)
-        comments = _mako_get_namespace(context, 'comments')
-        site_has_comments = context.get('site_has_comments', UNDEFINED)
-        helper = _mako_get_namespace(context, 'helper')
-        def content():
-            return render_content(context._locals(__M_locals))
-        date_format = context.get('date_format', UNDEFINED)
         index_file = context.get('index_file', UNDEFINED)
         def content_header():
             return render_content_header(context._locals(__M_locals))
+        def extra_head():
+            return render_extra_head(context._locals(__M_locals))
+        _link = context.get('_link', UNDEFINED)
         parent = context.get('parent', UNDEFINED)
         index_teasers = context.get('index_teasers', UNDEFINED)
+        def content():
+            return render_content(context._locals(__M_locals))
+        posts = context.get('posts', UNDEFINED)
+        front_index_header = context.get('front_index_header', UNDEFINED)
+        pagekind = context.get('pagekind', UNDEFINED)
+        permalink = context.get('permalink', UNDEFINED)
+        author_pages_generated = context.get('author_pages_generated', UNDEFINED)
+        site_has_comments = context.get('site_has_comments', UNDEFINED)
+        date_format = context.get('date_format', UNDEFINED)
+        comments = _mako_get_namespace(context, 'comments')
+        helper = _mako_get_namespace(context, 'helper')
         __M_writer = context.writer()
         __M_writer('\n')
         __M_writer('\n')
@@ -67,23 +71,12 @@ def render_body(context,**pageargs):
         context.caller_stack._pop_frame()
 
 
-def render_extra_head(context,**pageargs):
+def render_content_header(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
-        def extra_head():
-            return render_extra_head(context)
-        parent = context.get('parent', UNDEFINED)
-        posts = context.get('posts', UNDEFINED)
-        index_file = context.get('index_file', UNDEFINED)
-        permalink = context.get('permalink', UNDEFINED)
+        def content_header():
+            return render_content_header(context)
         __M_writer = context.writer()
-        __M_writer('\n    ')
-        __M_writer(str(parent.extra_head()))
-        __M_writer('\n')
-        if posts and (permalink == '/' or permalink == '/' + index_file):
-            __M_writer('        <link rel="prefetch" href="')
-            __M_writer(str(posts[0].permalink()))
-            __M_writer('" type="text/html">\n')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -92,40 +85,58 @@ def render_extra_head(context,**pageargs):
 def render_content(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
-        posts = context.get('posts', UNDEFINED)
-        comments = _mako_get_namespace(context, 'comments')
+        author_pages_generated = context.get('author_pages_generated', UNDEFINED)
         site_has_comments = context.get('site_has_comments', UNDEFINED)
-        helper = _mako_get_namespace(context, 'helper')
-        def content():
-            return render_content(context)
-        date_format = context.get('date_format', UNDEFINED)
         def content_header():
             return render_content_header(context)
+        date_format = context.get('date_format', UNDEFINED)
+        _link = context.get('_link', UNDEFINED)
         index_teasers = context.get('index_teasers', UNDEFINED)
+        def content():
+            return render_content(context)
+        comments = _mako_get_namespace(context, 'comments')
+        helper = _mako_get_namespace(context, 'helper')
+        front_index_header = context.get('front_index_header', UNDEFINED)
+        posts = context.get('posts', UNDEFINED)
+        pagekind = context.get('pagekind', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\n')
         if 'parent' not in context._data or not hasattr(context._data['parent'], 'content_header'):
             context['self'].content_header(**pageargs)
         
 
-        __M_writer('\n<div class="posts">\n')
+        __M_writer('\n')
+        if 'main_index' in pagekind:
+            __M_writer('    ')
+            __M_writer(str(front_index_header))
+            __M_writer('\n')
+        __M_writer('<div class="postindex">\n')
         for post in posts:
-            __M_writer('    <article class="post h-entry post-')
+            __M_writer('    <article class="h-entry post-')
             __M_writer(str(post.meta('type')))
-            __M_writer('">\n    <header>\n        <h1 class="post-title p-name"><a href="')
+            __M_writer('">\n    <header>\n        <h1 class="p-name entry-title"><a href="')
             __M_writer(str(post.permalink()))
             __M_writer('" class="u-url">')
             __M_writer(filters.html_escape(str(post.title())))
-            __M_writer('</a></h1>\n        <div class="metadata">\n            <p class="byline author vcard"><span class="byline-name fn">')
-            __M_writer(str(post.author()))
-            __M_writer('</span></p>\n            <p class="dateline"><a href="')
+            __M_writer('</a></h1>\n        <div class="metadata">\n            <p class="byline author vcard"><span class="byline-name fn">\n')
+            if author_pages_generated:
+                __M_writer('                <a href="')
+                __M_writer(str(_link('author', post.author())))
+                __M_writer('">')
+                __M_writer(filters.html_escape(str(post.author())))
+                __M_writer('</a>\n')
+            else:
+                __M_writer('                ')
+                __M_writer(filters.html_escape(str(post.author())))
+                __M_writer('\n')
+            __M_writer('            </span></p>\n            <p class="dateline"><a href="')
             __M_writer(str(post.permalink()))
-            __M_writer('" rel="bookmark"><time class="post-date published dt-published" datetime="')
-            __M_writer(str(post.date.isoformat()))
+            __M_writer('" rel="bookmark"><time class="published dt-published" datetime="')
+            __M_writer(str(post.formatted_date('webiso')))
             __M_writer('" title="')
-            __M_writer(str(post.formatted_date(date_format)))
+            __M_writer(filters.html_escape(str(post.formatted_date(date_format))))
             __M_writer('">')
-            __M_writer(str(post.formatted_date(date_format)))
+            __M_writer(filters.html_escape(str(post.formatted_date(date_format))))
             __M_writer('</time></a></p>\n')
             if not post.meta('nocomments') and site_has_comments:
                 __M_writer('                <p class="commentline">')
@@ -153,12 +164,23 @@ def render_content(context,**pageargs):
         context.caller_stack._pop_frame()
 
 
-def render_content_header(context,**pageargs):
+def render_extra_head(context,**pageargs):
     __M_caller = context.caller_stack._push_frame()
     try:
-        def content_header():
-            return render_content_header(context)
+        index_file = context.get('index_file', UNDEFINED)
+        permalink = context.get('permalink', UNDEFINED)
+        def extra_head():
+            return render_extra_head(context)
+        posts = context.get('posts', UNDEFINED)
+        parent = context.get('parent', UNDEFINED)
         __M_writer = context.writer()
+        __M_writer('\n    ')
+        __M_writer(str(parent.extra_head()))
+        __M_writer('\n')
+        if posts and (permalink == '/' or permalink == '/' + index_file):
+            __M_writer('        <link rel="prefetch" href="')
+            __M_writer(str(posts[0].permalink()))
+            __M_writer('" type="text/html">\n')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -166,6 +188,6 @@ def render_content_header(context,**pageargs):
 
 """
 __M_BEGIN_METADATA
-{"line_map": {"128": 22, "129": 22, "130": 23, "131": 24, "132": 24, "133": 24, "134": 26, "135": 28, "136": 29, "137": 30, "138": 30, "139": 31, "140": 32, "141": 33, "142": 33, "143": 35, "144": 38, "145": 39, "146": 39, "147": 40, "148": 40, "149": 41, "150": 41, "23": 3, "26": 2, "156": 14, "32": 0, "167": 156, "52": 2, "53": 3, "54": 4, "59": 11, "64": 42, "70": 6, "80": 6, "81": 7, "82": 7, "83": 8, "84": 9, "85": 9, "86": 9, "92": 13, "106": 13, "111": 14, "112": 16, "113": 17, "114": 17, "115": 17, "116": 19, "117": 19, "118": 19, "119": 19, "120": 21, "121": 21, "122": 22, "123": 22, "124": 22, "125": 22, "126": 22, "127": 22}, "uri": "index.tmpl", "source_encoding": "utf-8", "filename": "themes/lanyon/templates/index.tmpl"}
+{"source_encoding": "utf-8", "line_map": {"128": 27, "129": 28, "130": 28, "131": 28, "132": 30, "133": 31, "134": 31, "135": 31, "136": 31, "137": 31, "138": 31, "139": 31, "140": 31, "141": 32, "142": 33, "143": 33, "144": 33, "145": 35, "146": 37, "147": 38, "148": 39, "149": 39, "150": 40, "23": 3, "152": 42, "153": 42, "26": 2, "155": 47, "156": 48, "154": 44, "158": 49, "159": 49, "32": 0, "161": 50, "167": 6, "157": 48, "177": 6, "178": 7, "179": 7, "180": 8, "181": 9, "182": 9, "183": 9, "56": 2, "57": 3, "58": 4, "151": 41, "189": 183, "63": 11, "160": 50, "68": 51, "74": 14, "85": 13, "103": 13, "108": 14, "109": 15, "110": 16, "111": 16, "112": 16, "113": 18, "114": 19, "115": 20, "116": 20, "117": 20, "118": 22, "119": 22, "120": 22, "121": 22, "122": 25, "123": 26, "124": 26, "125": 26, "126": 26, "127": 26}, "uri": "index.tmpl", "filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/index.tmpl"}
 __M_END_METADATA
 """
