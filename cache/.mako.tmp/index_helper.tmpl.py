@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1462300146.065183
+_modified_time = 1462300628.8104675
 _enable_loop = True
 _template_filename = '/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/index_helper.tmpl'
 _template_uri = 'index_helper.tmpl'
@@ -29,8 +29,8 @@ def render_mathjax_script(context,posts):
     __M_caller = context.caller_stack._push_frame()
     try:
         any = context.get('any', UNDEFINED)
-        use_katex = context.get('use_katex', UNDEFINED)
         mathjax_config = context.get('mathjax_config', UNDEFINED)
+        use_katex = context.get('use_katex', UNDEFINED)
         __M_writer = context.writer()
         __M_writer('\n')
         if any(post.is_mathjax for post in posts):
@@ -79,6 +79,6 @@ def render_html_pager(context):
 
 """
 __M_BEGIN_METADATA
-{"source_encoding": "utf-8", "filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/index_helper.tmpl", "line_map": {"64": 8, "65": 8, "66": 8, "67": 8, "68": 11, "69": 12, "70": 13, "71": 13, "72": 13, "73": 13, "74": 16, "16": 0, "21": 19, "22": 40, "28": 21, "80": 74, "35": 21, "36": 22, "37": 23, "38": 24, "39": 29, "40": 30, "41": 31, "42": 32, "43": 32, "44": 32, "45": 33, "46": 34, "52": 2, "59": 2, "60": 3, "61": 4, "62": 6, "63": 7}, "uri": "index_helper.tmpl"}
+{"filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/index_helper.tmpl", "source_encoding": "utf-8", "uri": "index_helper.tmpl", "line_map": {"64": 8, "65": 8, "66": 8, "67": 8, "68": 11, "69": 12, "70": 13, "71": 13, "72": 13, "73": 13, "74": 16, "16": 0, "21": 19, "22": 40, "28": 21, "80": 74, "35": 21, "36": 22, "37": 23, "38": 24, "39": 29, "40": 30, "41": 31, "42": 32, "43": 32, "44": 32, "45": 33, "46": 34, "52": 2, "59": 2, "60": 3, "61": 4, "62": 6, "63": 7}}
 __M_END_METADATA
 """
