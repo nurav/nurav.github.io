@@ -1,5 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Varun's Blog</title><link>http://nurav.github.io/</link><description>My musings on technology and other things</description><atom:link href="http://nurav.github.io/rss.xml" type="application/rss+xml" rel="self"></atom:link><language>en</language><lastBuildDate>Tue, 03 May 2016 18:29:06 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Guess who got into Google Summer of Code?</title><link>http://nurav.github.io/posts/guess-who-got-into-google-summer-of-code/</link><dc:creator>Varun Joshi</dc:creator><description>&lt;div&gt;&lt;p&gt;I'm really excited to say that I'll be participating in Google Summer of Code this year, with Mozilla! I'm going to be working on the Balrog update server this summer, under &lt;a class="reference external" href="http://hearsum.ca"&gt;Ben's&lt;/a&gt; guidance. Thank you Mozilla and Google for giving me this chance!&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Varun's Blog</title><link>http://nurav.github.io/</link><description>My musings on technology and other things</description><atom:link rel="self" type="application/rss+xml" href="http://nurav.github.io/rss.xml"></atom:link><language>en</language><lastBuildDate>Mon, 16 May 2016 19:27:46 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Multifile Responses in Balrog</title><link>http://nurav.github.io/posts/multifile-responses-in-balrog/</link><dc:creator>Varun Joshi</dc:creator><description>&lt;div&gt;&lt;p&gt;Apart from Firefox, Balrog is also used by Mozilla to provide updates for the Gecko Media Plugin (GMP) package. The Gecko Media Plugin package contains various plugins for media support, like the OpenH264 codec and the Widevine plugin. To handle updates to these, we have a speical GMP blob that lists updates to the plugins. Updates to every plugin are included in one blob. This leads to problems when there are multiple versions of a plugin that we can use. For example, we might serve OpenH264 version 1.5.3 on Firefox 42 on Windows and version 1.5.2 on Firefox 40. We have to maintain a blob for each possible combination of versions. With an increase in the number of versions available, this method of serving updates might become intractable.&lt;/p&gt;
+&lt;p&gt;Ben and I discussed various strategies we could use to tackle this. A gist of what went through our minds is on &lt;a class="reference external" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1245941"&gt;the bug page&lt;/a&gt;. What we eventually went ahead with was to add a blob type that got its contents from other blobs. We call this blob type &lt;tt class="docutils literal"&gt;SuperBlob&lt;/tt&gt;.&lt;/p&gt;
+&lt;div class="section" id="superblob"&gt;
+&lt;h2&gt;SuperBlob&lt;/h2&gt;
+&lt;p&gt;A SuperBlob is basically just a redirection mechanism. It just contains the names of the products that we wish to include in the generated XML.:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+ {
+    "name": "fake",
+    "schema_version": 4000,
+    "products": [
+        "c",
+        "d"
+    ]
+}
+&lt;/pre&gt;
+&lt;p&gt;This superblob is called &lt;tt class="docutils literal"&gt;fake&lt;/tt&gt;. It just asks to look at the products named &lt;tt class="docutils literal"&gt;c&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;d&lt;/tt&gt;. A rule can be set to point at this SuperBlob if we wish the response product to have all the files listed in products &lt;tt class="docutils literal"&gt;c&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;d&lt;/tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-does-this-work"&gt;
+&lt;h2&gt;How does this work?&lt;/h2&gt;
+&lt;p&gt;The web interface, while processing requests, checks if the rule evaluates to a SuperBlob. If it is, it gets the product names from the SuperBlob and gets the corresponding blobs by evaluating the query with the requested product changed. So, in our example, the web interface will evaluate the query with the product name changed to &lt;tt class="docutils literal"&gt;c&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;d&lt;/tt&gt; and obtain the resultant blobs. It will pick up the header and footer XML from the output of processing the blob obtained from the &lt;strong&gt;first product&lt;/strong&gt; and the inner XML will include the concatenated inner XMLs of all the blobs obtained from the products listed in the SuperBlob.&lt;/p&gt;
+&lt;p&gt;So, if product &lt;tt class="docutils literal"&gt;a&lt;/tt&gt; gave:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+&amp;lt;updates&amp;gt;
+    &amp;lt;update type="minor" version="None" extensionVersion="2.5" buildID="25"&amp;gt;
+        &amp;lt;patch type="complete" URL="http://a.com/b" hashFunction="sha512" hashValue="23" size="27777777"/&amp;gt;
+    &amp;lt;/update&amp;gt;
+&amp;lt;/updates&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;and product &lt;tt class="docutils literal"&gt;b&lt;/tt&gt; gave:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+&amp;lt;updates&amp;gt;
+    &amp;lt;update type="minor" version="None" extensionVersion="2.5" buildID="25"&amp;gt;
+        &amp;lt;patch type="complete" URL="http://a.com/public" hashFunction="sha512" hashValue="23" size="22"/&amp;gt;
+    &amp;lt;/update&amp;gt;
+&amp;lt;/updates&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;the &lt;tt class="docutils literal"&gt;SuperBlob&lt;/tt&gt; will give:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+&amp;lt;updates&amp;gt;
+    &amp;lt;update type="minor" version="None" extensionVersion="2.5" buildID="25"&amp;gt;
+        &amp;lt;patch type="complete" URL="http://a.com/public" hashFunction="sha512" hashValue="23" size="22"/&amp;gt;
+        &amp;lt;patch type="complete" URL="http://a.com/b" hashFunction="sha512" hashValue="23" size="27777777"/&amp;gt;
+    &amp;lt;/update&amp;gt;
+&amp;lt;/updates&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;So, we can now have one fixed rule for all GMP responses and have several rules for each constituent plugin without having to worry about the combinations like we had to do earlier.&lt;/p&gt;
+&lt;p&gt;While working on this, I also removed the &lt;tt class="docutils literal"&gt;createXML&lt;/tt&gt; method in favour of three methods that return the header, the inner XML and the footer respectively. This helped in seperating the various components of the XML output without having to parse it. The XML generation logic has moved to the client view.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;</description><category>Mozilla</category><guid>http://nurav.github.io/posts/multifile-responses-in-balrog/</guid><pubDate>Mon, 16 May 2016 17:59:34 GMT</pubDate></item><item><title>Guess who got into Google Summer of Code?</title><link>http://nurav.github.io/posts/guess-who-got-into-google-summer-of-code/</link><dc:creator>Varun Joshi</dc:creator><description>&lt;div&gt;&lt;p&gt;I'm really excited to say that I'll be participating in Google Summer of Code this year, with Mozilla! I'm going to be working on the Balrog update server this summer, under &lt;a class="reference external" href="http://hearsum.ca"&gt;Ben's&lt;/a&gt; guidance. Thank you Mozilla and Google for giving me this chance!&lt;/p&gt;
 &lt;p&gt;I'll be optimizing Balrog by devising a mechanism to handle update races. A future blog post will describe how exactly these races occur and how I aim to resolve them. Basically, an algorithm similar to what git uses for 3-way merges is required, but we also need to take care of nesting since the 'Blob' data structure, that we use, has nested data. I will also share my proposal and the timeline I'll be following in the coming weeks.&lt;/p&gt;
 &lt;p&gt;These three months are going to be amazing and I'm really looking forward to working with the Mozilla RelEng community! I will be blogging weekly once the coding period commences, and I welcome any suggestions that might lead to me presenting a better final product.&lt;/p&gt;&lt;/div&gt;</description><category>Mozilla</category><guid>http://nurav.github.io/posts/guess-who-got-into-google-summer-of-code/</guid><pubDate>Sat, 30 Apr 2016 18:14:47 GMT</pubDate></item><item><title>External Plugins: Alternatives</title><link>http://nurav.github.io/posts/2015-12-22-external-plugins-alternatives/</link><dc:creator>Varun Joshi</dc:creator><description>&lt;div&gt;&lt;ul&gt;
 &lt;li&gt;Embedding a Python Interpreter:&lt;/li&gt;

@@ -10,7 +10,7 @@
 <meta content="#5670d4" name="theme-color">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
 <link rel="canonical" href="http://nurav.github.io/">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/guess-who-got-into-google-summer-of-code/" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/multifile-responses-in-balrog/" type="text/html">
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -60,7 +60,72 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/guess-who-got-into-google-summer-of-code/" class="u-url">Guess who got into Google Summer of Code?</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/multifile-responses-in-balrog/" class="u-url">Multifile Responses in Balrog</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Varun Joshi
+            </span></p>
+            <p class="dateline"><a href="posts/multifile-responses-in-balrog/" rel="bookmark"><time class="published dt-published" datetime="2016-05-16T23:29:34+05:30" title="2016-05-16 23:29">2016-05-16 23:29</time></a></p>
+                <p class="commentline">
+        
+    <a href="posts/multifile-responses-in-balrog/#disqus_thread" data-disqus-identifier="cache/posts/multifile-responses-in-balrog.html">Comments</a>
+
+
+        </p>
+</div>
+    </header><div class="e-content entry-content">
+    <div>
+<p>Apart from Firefox, Balrog is also used by Mozilla to provide updates for the Gecko Media Plugin (GMP) package. The Gecko Media Plugin package contains various plugins for media support, like the OpenH264 codec and the Widevine plugin. To handle updates to these, we have a speical GMP blob that lists updates to the plugins. Updates to every plugin are included in one blob. This leads to problems when there are multiple versions of a plugin that we can use. For example, we might serve OpenH264 version 1.5.3 on Firefox 42 on Windows and version 1.5.2 on Firefox 40. We have to maintain a blob for each possible combination of versions. With an increase in the number of versions available, this method of serving updates might become intractable.</p>
+<p>Ben and I discussed various strategies we could use to tackle this. A gist of what went through our minds is on <a class="reference external" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1245941">the bug page</a>. What we eventually went ahead with was to add a blob type that got its contents from other blobs. We call this blob type <tt class="docutils literal">SuperBlob</tt>.</p>
+<div class="section" id="superblob">
+<h2>SuperBlob</h2>
+<p>A SuperBlob is basically just a redirection mechanism. It just contains the names of the products that we wish to include in the generated XML.:</p>
+<pre class="literal-block">
+ {
+    "name": "fake",
+    "schema_version": 4000,
+    "products": [
+        "c",
+        "d"
+    ]
+}
+</pre>
+<p>This superblob is called <tt class="docutils literal">fake</tt>. It just asks to look at the products named <tt class="docutils literal">c</tt> and <tt class="docutils literal">d</tt>. A rule can be set to point at this SuperBlob if we wish the response product to have all the files listed in products <tt class="docutils literal">c</tt> and <tt class="docutils literal">d</tt>.</p>
+</div>
+<div class="section" id="how-does-this-work">
+<h2>How does this work?</h2>
+<p>The web interface, while processing requests, checks if the rule evaluates to a SuperBlob. If it is, it gets the product names from the SuperBlob and gets the corresponding blobs by evaluating the query with the requested product changed. So, in our example, the web interface will evaluate the query with the product name changed to <tt class="docutils literal">c</tt> and <tt class="docutils literal">d</tt> and obtain the resultant blobs. It will pick up the header and footer XML from the output of processing the blob obtained from the <strong>first product</strong> and the inner XML will include the concatenated inner XMLs of all the blobs obtained from the products listed in the SuperBlob.</p>
+<p>So, if product <tt class="docutils literal">a</tt> gave:</p>
+<pre class="literal-block">
+&lt;updates&gt;
+    &lt;update type="minor" version="None" extensionVersion="2.5" buildID="25"&gt;
+        &lt;patch type="complete" URL="http://a.com/b" hashFunction="sha512" hashValue="23" size="27777777"/&gt;
+    &lt;/update&gt;
+&lt;/updates&gt;
+</pre>
+<p>and product <tt class="docutils literal">b</tt> gave:</p>
+<pre class="literal-block">
+&lt;updates&gt;
+    &lt;update type="minor" version="None" extensionVersion="2.5" buildID="25"&gt;
+        &lt;patch type="complete" URL="http://a.com/public" hashFunction="sha512" hashValue="23" size="22"/&gt;
+    &lt;/update&gt;
+&lt;/updates&gt;
+</pre>
+<p>the <tt class="docutils literal">SuperBlob</tt> will give:</p>
+<pre class="literal-block">
+&lt;updates&gt;
+    &lt;update type="minor" version="None" extensionVersion="2.5" buildID="25"&gt;
+        &lt;patch type="complete" URL="http://a.com/public" hashFunction="sha512" hashValue="23" size="22"/&gt;
+        &lt;patch type="complete" URL="http://a.com/b" hashFunction="sha512" hashValue="23" size="27777777"/&gt;
+    &lt;/update&gt;
+&lt;/updates&gt;
+</pre>
+<p>So, we can now have one fixed rule for all GMP responses and have several rules for each constituent plugin without having to worry about the combinations like we had to do earlier.</p>
+<p>While working on this, I also removed the <tt class="docutils literal">createXML</tt> method in favour of three methods that return the header, the inner XML and the footer respectively. This helped in seperating the various components of the XML output without having to parse it. The XML generation logic has moved to the client view.</p>
+</div>
+</div>
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/guess-who-got-into-google-summer-of-code/" class="u-url">Guess who got into Google Summer of Code?</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Varun Joshi
