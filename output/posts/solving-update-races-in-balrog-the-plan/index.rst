@@ -1,7 +1,7 @@
 .. title: Solving Update Races in Balrog: The Plan
 .. slug: solving-update-races-in-balrog-the-plan
 .. date: 2016-05-24 14:07:57 UTC+05:30
-.. tags: Mozilla, draft
+.. tags: Mozilla
 .. category: 
 .. link: 
 .. description: 
@@ -12,8 +12,8 @@ The coding period for the Google Summer of Code has begun, so here is the plan f
 
 Currently, when two submitter tasks request Balrog for a blob to update at the same time, they both have the same data_version in the blob they send back with the added locale. This leads to the server rejecting one of these and the submitter having to retry. In most cases, the updates can simply be merged, preventing the retries. For example, this series of events is something like what happens now:
 
-1. Submitter 1 requests data_version from Balrog (data_version = 1)
-2. Submitter 2 requests data_version from Balrog (data_version = 1)
+1. Submitter 1 requests data from Balrog (and receives data specifying data_version = 1)
+2. Submitter 2 requests data from Balrog (data_version = 1)
 3. Submitter 1 submits release blob to Balrog with data_version  (data_version changes to 2)
 4. Submitter 2 fails to submit release blob to Balrog (since data_version is now 2, but submitter specified 1 in the request)
 
@@ -30,7 +30,7 @@ The basic algorithm for three-way merges is described here:
 7. For all other cases, we may consider the two changes to be conflicting and we may apply some conflict resolution strategies.
 8. If the type of an element changes, we can consider it to be a merge conflict.
 
-Further analysis needs to be done for the handling of list and tuple values, since the preservation of order might be important in those data structures. We might want to support two modes: one where the preservation of the order of the list elements is important and another where it isn't.
+Further analysis needs to be done for the handling of list and tuple values, since the preservation of order might be important in those data structures. We might want to support two modes: one where the preservation of the order of the list elements is important and another where it isn't. In some cases, merging strings might also be undesireable, so even might need to be made optional.
 
 We may employ several merge-conflict resolution strategies:
 

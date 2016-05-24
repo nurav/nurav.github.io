@@ -5,7 +5,7 @@ STOP_RENDERING = runtime.STOP_RENDERING
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 10
-_modified_time = 1464096807.87674
+_modified_time = 1464101646.085823
 _enable_loop = True
 _template_filename = '/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/story.tmpl'
 _template_uri = 'story.tmpl'
@@ -20,14 +20,14 @@ def _mako_get_namespace(context, name):
         _mako_generate_namespaces(context)
         return context.namespaces[(__name__, name)]
 def _mako_generate_namespaces(context):
+    ns = runtime.TemplateNamespace('pheader', context._clean_inheritance_tokens(), templateuri='post_header.tmpl', callables=None,  calling_uri=_template_uri)
+    context.namespaces[(__name__, 'pheader')] = ns
+
     ns = runtime.TemplateNamespace('comments', context._clean_inheritance_tokens(), templateuri='comments_helper.tmpl', callables=None,  calling_uri=_template_uri)
     context.namespaces[(__name__, 'comments')] = ns
 
     ns = runtime.TemplateNamespace('helper', context._clean_inheritance_tokens(), templateuri='post_helper.tmpl', callables=None,  calling_uri=_template_uri)
     context.namespaces[(__name__, 'helper')] = ns
-
-    ns = runtime.TemplateNamespace('pheader', context._clean_inheritance_tokens(), templateuri='post_header.tmpl', callables=None,  calling_uri=_template_uri)
-    context.namespaces[(__name__, 'pheader')] = ns
 
 def _mako_inherit(template, context):
     _mako_generate_namespaces(context)
@@ -39,12 +39,12 @@ def render_body(context,**pageargs):
         def content():
             return render_content(context._locals(__M_locals))
         site_has_comments = context.get('site_has_comments', UNDEFINED)
-        messages = context.get('messages', UNDEFINED)
-        enable_comments = context.get('enable_comments', UNDEFINED)
-        pheader = _mako_get_namespace(context, 'pheader')
-        helper = _mako_get_namespace(context, 'helper')
-        comments = _mako_get_namespace(context, 'comments')
         post = context.get('post', UNDEFINED)
+        pheader = _mako_get_namespace(context, 'pheader')
+        enable_comments = context.get('enable_comments', UNDEFINED)
+        messages = context.get('messages', UNDEFINED)
+        comments = _mako_get_namespace(context, 'comments')
+        helper = _mako_get_namespace(context, 'helper')
         __M_writer = context.writer()
         __M_writer('\n')
         __M_writer('\n')
@@ -66,12 +66,12 @@ def render_content(context,**pageargs):
         def content():
             return render_content(context)
         site_has_comments = context.get('site_has_comments', UNDEFINED)
-        messages = context.get('messages', UNDEFINED)
-        enable_comments = context.get('enable_comments', UNDEFINED)
-        pheader = _mako_get_namespace(context, 'pheader')
-        helper = _mako_get_namespace(context, 'helper')
-        comments = _mako_get_namespace(context, 'comments')
         post = context.get('post', UNDEFINED)
+        pheader = _mako_get_namespace(context, 'pheader')
+        enable_comments = context.get('enable_comments', UNDEFINED)
+        messages = context.get('messages', UNDEFINED)
+        comments = _mako_get_namespace(context, 'comments')
+        helper = _mako_get_namespace(context, 'helper')
         __M_writer = context.writer()
         __M_writer('\n<article class="storypage" itemscope="itemscope" itemtype="http://schema.org/Article">\n    <header>\n        ')
         __M_writer(str(pheader.html_title()))
@@ -96,6 +96,6 @@ def render_content(context,**pageargs):
 
 """
 __M_BEGIN_METADATA
-{"filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/story.tmpl", "uri": "story.tmpl", "line_map": {"87": 19, "76": 7, "77": 10, "78": 10, "79": 11, "80": 11, "81": 14, "82": 14, "83": 16, "84": 17, "85": 18, "86": 18, "23": 4, "88": 19, "89": 22, "26": 2, "91": 22, "29": 3, "97": 91, "35": 0, "90": 22, "49": 2, "50": 3, "51": 4, "52": 5, "57": 24, "63": 7}, "source_encoding": "utf-8"}
+{"filename": "/home/vjoshi/envs/nikolaenv/lib64/python3.4/site-packages/nikola/data/themes/base/templates/story.tmpl", "line_map": {"87": 19, "76": 7, "77": 10, "78": 10, "79": 11, "80": 11, "81": 14, "82": 14, "83": 16, "84": 17, "85": 18, "86": 18, "23": 3, "88": 19, "89": 22, "26": 4, "91": 22, "29": 2, "97": 91, "35": 0, "90": 22, "49": 2, "50": 3, "51": 4, "52": 5, "57": 24, "63": 7}, "uri": "story.tmpl", "source_encoding": "utf-8"}
 __M_END_METADATA
 """
