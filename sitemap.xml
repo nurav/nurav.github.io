@@ -19,7 +19,7 @@
  </url>
  <url>
   <loc>http://nurav.github.io/archive.html</loc>
-  <lastmod>2016-05-16T19:19:00Z</lastmod>
+  <lastmod>2016-05-24T14:54:00Z</lastmod>
  </url>
  <url>
   <loc>http://nurav.github.io/categories/</loc>
@@ -68,6 +68,10 @@
  <url>
   <loc>http://nurav.github.io/posts/multifile-responses-in-balrog/</loc>
   <lastmod>2016-05-16T19:19:00Z</lastmod>
+ </url>
+ <url>
+  <loc>http://nurav.github.io/posts/solving-update-races-in-balrog-the-plan/</loc>
+  <lastmod>2016-05-24T13:26:00Z</lastmod>
  </url>
  <url>
   <loc>http://nurav.github.io/stories/a-study-in-scarlet/</loc>
