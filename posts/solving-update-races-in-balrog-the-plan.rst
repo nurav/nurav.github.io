@@ -33,8 +33,9 @@ The basic algorithm for three-way merges is described here:
 Further analysis needs to be done for the handling of list and tuple values, since the preservation of order might be important in those data structures. We might want to support two modes: one where the preservation of the order of the list elements is important and another where it isn't.
 
 We may employ several merge-conflict resolution strategies:
-    - Select one of the changes.
-    - Discard both changes
+
+- Select one of the changes.
+- Discard both changes
 
 This algorithm is based on this `research paper <http://www.cis.upenn.edu/~bcpierce/papers/diff3-short.pdf>`_ and this `email <https://www.mercurial-scm.org/pipermail/mercurial-devel/2006-November/000322.html>`_. Both show how a three way merge would work out for strings.
 

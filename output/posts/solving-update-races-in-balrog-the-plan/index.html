@@ -113,13 +113,11 @@ Currently, when two submitter tasks request Balrog for a blob to update at the s
 <li>If the type of an element changes, we can consider it to be a merge conflict.</li>
 </ol>
 <p>Further analysis needs to be done for the handling of list and tuple values, since the preservation of order might be important in those data structures. We might want to support two modes: one where the preservation of the order of the list elements is important and another where it isn't.</p>
-<dl class="docutils">
-<dt>We may employ several merge-conflict resolution strategies:</dt>
-<dd><ul class="first last simple">
+<p>We may employ several merge-conflict resolution strategies:</p>
+<ul class="simple">
 <li>Select one of the changes.</li>
 <li>Discard both changes</li>
-</ul></dd>
-</dl>
+</ul>
 <p>This algorithm is based on this <a class="reference external" href="http://www.cis.upenn.edu/~bcpierce/papers/diff3-short.pdf">research paper</a> and this <a class="reference external" href="https://www.mercurial-scm.org/pipermail/mercurial-devel/2006-November/000322.html">email</a>. Both show how a three way merge would work out for strings.</p>
 <p><a class="reference external" href="https://docs.google.com/document/d/1jRi6nPNYvja2vqFWIAZ7JHTpnW8mOp8tTRnfIxxlxDY/edit?usp=sharing">Here</a>  is a link to my proposal. Keep checking this space every week for updates on my project and feel free to point out if I can do anything better! Thank you :)</p>
 </div>
