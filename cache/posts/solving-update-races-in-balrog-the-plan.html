@@ -1,0 +1,31 @@
+<p>The coding period for the Google Summer of Code has begun, so here is the plan for the project, as was promised.</p>
+<p>Currently, when two submitter tasks request Balrog for a blob to update at the same time, they both have the same data_version in the blob they send back with the added locale. This leads to the server rejecting one of these and the submitter having to retry. In most cases, the updates can simply be merged, preventing the retries. For example, this series of events is something like what happens now:</p>
+<ol class="arabic simple">
+<li>Submitter 1 requests data_version from Balrog (data_version = 1)</li>
+<li>Submitter 2 requests data_version from Balrog (data_version = 1)</li>
+<li>Submitter 1 submits release blob to Balrog with data_version  (data_version changes to 2)</li>
+<li>Submitter 2 fails to submit release blob to Balrog (since data_version is now 2, but submitter specified 1 in the request)</li>
+</ol>
+<p>At most times, the data in the blobs is similar apart from some added data such as added locales. So, we can try to reduce submission failures by devising a way to merge the blob versions when we receive a request with an outdated data_version. As my project, I will seek to implement the merging of two blobs. This will be with the utilization of a three-way merge algorithm, something similar to what git uses for merges. Since we currently do not have any libraries for this task, I will make a module for three-way merges of python data structures (and hopefully get it published on PyPI!) and use that within Balrog to accomplish the goals of this project.</p>
+<p>The basic algorithm for three-way merges is described here:</p>
+<ol class="arabic simple">
+<li>We first calculate a diff between the new versions of the file (data_version 2 and the version where we fail, in our example) and the old version (data_version 1). There are multiple tools that allow diffs of the form we want. <a class="reference external" href="https://github.com/inveniosoftware/dictdiffer">DictDiffer</a> and <a class="reference external" href="https://github.com/seperman/deepdiff">deepdiff</a> are two alternatives we could utilize for this step. Both of them return an easy to use list of differences in our blobs.</li>
+<li>If there are no changes for that particular item in either diff or if both diffs have added an element with equal values, we add the item in the resultant object.</li>
+<li>If both diffs have removed some item, we ignore that item and do not include it in our output.</li>
+<li>If one diff has added an element while the other hasn't, we add the element.</li>
+<li>If both diffs have added or changed an element but they have unequal values, we recursively apply our algorithm. If there is a difference in a string that was present in the the root version (data_version 1 in our example), we might apply a string three way merge algorithm.</li>
+<li>For lists, we can treat every list element as a line in text and apply a traditional three way merge algorithm to it.</li>
+<li>For all other cases, we may consider the two changes to be conflicting and we may apply some conflict resolution strategies.</li>
+<li>If the type of an element changes, we can consider it to be a merge conflict.</li>
+</ol>
+<p>Further analysis needs to be done for the handling of list and tuple values, since the preservation of order might be important in those data structures. We might want to support two modes: one where the preservation of the order of the list elements is important and another where it isn't.</p>
+<dl class="docutils">
+<dt>We may employ several merge-conflict resolution strategies:</dt>
+<dd><ul class="first last simple">
+<li>Select one of the changes.</li>
+<li>Discard both changes</li>
+</ul>
+</dd>
+</dl>
+<p>This algorithm is based on this <a class="reference external" href="http://www.cis.upenn.edu/~bcpierce/papers/diff3-short.pdf">research paper</a> and this <a class="reference external" href="https://www.mercurial-scm.org/pipermail/mercurial-devel/2006-November/000322.html">email</a>. Both show how a three way merge would work out for strings.</p>
+<p><a class="reference external" href="https://docs.google.com/document/d/1jRi6nPNYvja2vqFWIAZ7JHTpnW8mOp8tTRnfIxxlxDY/edit?usp=sharing">Here</a>  is a link to my proposal. Keep checking this space every week for updates on my project and feel free to point out if I can do anything better! Thank you :)</p>
